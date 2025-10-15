@@ -1,0 +1,13 @@
+{
+  "specPathGlobs": ["src/**/*.ts"],
+  "tsconfigPath": "./tsconfig.json",
+  "specVersion": 3,
+  "outputPath": "./openapi.json",
+  "specFileName": "openapi.json",
+  "debug": false,
+  "ignoreErrors": false,
+  "packageJsonPath": "./package.json",
+  "openapiTitle": "Natural Disasters Monitor API",
+  "openapiVersion": "1.0.0",
+  "openapiDescription": "API for monitoring natural disasters and events worldwide"
+}
