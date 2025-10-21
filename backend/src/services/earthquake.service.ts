@@ -111,11 +111,9 @@ export class EarthquakeService {
               },
             });
 
-            try {
-              await imageService.createOriginalImage(newEarthquake.id);
-            } catch (imageError) {
+            imageService.createOriginalImage(newEarthquake.id).catch((imageError) => {
               console.warn(`Failed to create image for earthquake ${newEarthquake.id}:`, imageError);
-            }
+            });
 
             result.created++;
           }

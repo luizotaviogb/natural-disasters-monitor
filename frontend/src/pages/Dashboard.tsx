@@ -134,14 +134,6 @@ export const Dashboard: React.FC = () => {
                 <h3 className="font-semibold text-primary-900 mb-1">Browse All Earthquakes</h3>
                 <p className="text-sm text-primary-700">View and filter all recorded seismic events</p>
               </Link>
-              <div className="block p-4 bg-gray-100 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-1">Map View</h3>
-                <p className="text-sm text-gray-600">Interactive global earthquake map (Coming soon)</p>
-              </div>
-              <div className="block p-4 bg-gray-100 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-1">Analytics</h3>
-                <p className="text-sm text-gray-600">Detailed analytics and trends (Coming soon)</p>
-              </div>
             </div>
           </div>
         </div>

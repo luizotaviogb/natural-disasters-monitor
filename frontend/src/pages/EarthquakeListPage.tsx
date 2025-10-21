@@ -37,8 +37,13 @@ export const EarthquakeListPage: React.FC = () => {
     try {
       await syncMutation.mutateAsync({ minMagnitude: 2.5, limit: 100 });
       await refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sync failed:', error);
+      if (error.code === 'ECONNABORTED') {
+        alert('Sync request timed out. The sync may still be processing on the server. Please try refreshing in a few moments.');
+      } else {
+        alert('Sync failed. Please try again.');
+      }
     }
   };
 
@@ -107,7 +112,11 @@ export const EarthquakeListPage: React.FC = () => {
 
         {syncMutation.isSuccess && (
           <div className="mb-6 bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg">
-            Sync successful! Created: {syncMutation.data.data.created}, Updated: {syncMutation.data.data.updated}
+            <div className="font-semibold">Sync successful!</div>
+            <div>Created: {syncMutation.data.data.created}, Updated: {syncMutation.data.data.updated}</div>
+            {syncMutation.data.data.created > 0 && (
+              <div className="text-sm mt-1">Images are being generated in the background.</div>
+            )}
           </div>
         )}
 
