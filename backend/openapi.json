@@ -1,8 +1,8 @@
 {
   "info": {
-    "title": "Natural Disasters Monitor API",
-    "version": "1.0.0",
-    "description": "API for monitoring natural disasters and events worldwide"
+    "title": "Tspec API",
+    "version": "0.0.1",
+    "description": ""
   },
   "openapi": "3.0.3",
   "paths": {
@@ -311,6 +311,289 @@
           }
         }
       }
+    },
+    "/api/earthquakes": {
+      "get": {
+        "operationId": "EarthquakeApiSpec_get_/api/earthquakes",
+        "tags": [
+          "Earthquakes",
+          "Earthquakes"
+        ],
+        "summary": "List earthquakes",
+        "description": "Get a paginated list of earthquakes with optional filters",
+        "parameters": [
+          {
+            "name": "minMagnitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxMagnitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minLatitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxLatitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "minLongitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxLongitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "magnitude",
+                "time"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EarthquakeListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/earthquakes/{id}": {
+      "get": {
+        "operationId": "EarthquakeApiSpec_get_/api/earthquakes/{id}",
+        "tags": [
+          "Earthquakes",
+          "Earthquakes"
+        ],
+        "summary": "Get earthquake details",
+        "description": "Get detailed information about a specific earthquake",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EarthquakeDetailResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EarthquakeErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/earthquakes/sync": {
+      "post": {
+        "operationId": "EarthquakeApiSpec_post_/api/earthquakes/sync",
+        "tags": [
+          "Earthquakes",
+          "Earthquakes"
+        ],
+        "summary": "Sync earthquakes from USGS",
+        "description": "Fetch and synchronize earthquake data from USGS API",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "minMagnitude": {
+                    "type": "number"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "limit": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncEarthquakesResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncEarthquakesResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -457,6 +740,279 @@
         "additionalProperties": false,
         "required": [
           "accessToken"
+        ]
+      },
+      "EarthquakeListResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EarthquakeListResponse"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "success"
+        ]
+      },
+      "EarthquakeListResponse": {
+        "type": "object",
+        "properties": {
+          "earthquakes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarthquakeDetail"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "earthquakes",
+          "hasMore",
+          "page",
+          "pageSize",
+          "total"
+        ]
+      },
+      "EarthquakeDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "usgsId": {
+            "type": "string"
+          },
+          "magnitude": {
+            "type": "number"
+          },
+          "place": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "depth": {
+            "type": "number"
+          },
+          "magType": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tsunamiFlag": {
+            "type": "number"
+          },
+          "significance": {
+            "type": "number"
+          },
+          "alert": {
+            "type": "string"
+          },
+          "felt": {
+            "type": "number"
+          },
+          "cdi": {
+            "type": "number"
+          },
+          "mmi": {
+            "type": "number"
+          },
+          "detailUrl": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarthquakeImageDetail"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "createdAt",
+          "depth",
+          "id",
+          "latitude",
+          "longitude",
+          "magnitude",
+          "place",
+          "time",
+          "tsunamiFlag",
+          "updated",
+          "updatedAt",
+          "usgsId"
+        ]
+      },
+      "EarthquakeImageDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "originalUrl": {
+            "type": "string"
+          },
+          "processedUrl": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "imageType": {
+            "type": "string"
+          },
+          "processingStatus": {
+            "type": "string"
+          },
+          "processingTime": {
+            "type": "number"
+          },
+          "metadata": {}
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "imageType",
+          "processingStatus"
+        ]
+      },
+      "EarthquakeDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EarthquakeDetail"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "success"
+        ]
+      },
+      "EarthquakeErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "message",
+          "success"
+        ]
+      },
+      "SyncEarthquakesParams": {
+        "type": "object",
+        "properties": {
+          "minMagnitude": {
+            "type": "number"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SyncEarthquakesResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SyncResult"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "message",
+          "success"
+        ]
+      },
+      "SyncResult": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "number"
+          },
+          "created": {
+            "type": "number"
+          },
+          "updated": {
+            "type": "number"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "created",
+          "errors",
+          "success",
+          "total",
+          "updated"
         ]
       }
     }

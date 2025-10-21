@@ -12,9 +12,11 @@ model User {
   email         String         @unique
   password      String
   name          String
+  role          UserRole       @default(USER)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
 
   @@map("users")
 }
@@ -28,4 +30,107 @@ model RefreshToken {
   createdAt DateTime @default(now())
 
   @@map("refresh_tokens")
+}
+
+model Earthquake {
+  id           String            @id @default(uuid())
+  usgsId       String            @unique
+  magnitude    Float
+  place        String
+  time         DateTime
+  updated      DateTime
+  latitude     Float
+  longitude    Float
+  depth        Float
+  magType      String?
+  status       String?
+  tsunamiFlag  Int               @default(0)
+  significance Int?
+  alert        String?
+  felt         Int?
+  cdi          Float?
+  mmi          Float?
+  net          String?
+  code         String?
+  sources      String?
+  types        String?
+  nst          Int?
+  dmin         Float?
+  rms          Float?
+  gap          Float?
+  detailUrl    String?
+  images       EarthquakeImage[]
+  auditLogs    AuditLog[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([magnitude])
+  @@index([time])
+  @@index([latitude, longitude])
+  @@map("earthquakes")
+}
+
+model EarthquakeImage {
+  id               String           @id @default(uuid())
+  earthquakeId     String
+  earthquake       Earthquake       @relation(fields: [earthquakeId], references: [id], onDelete: Cascade)
+  originalUrl      String?
+  processedUrl     String?
+  thumbnailUrl     String?
+  imageType        ImageType
+  processingStatus ProcessingStatus @default(PENDING)
+  processingTime   Int?
+  metadata         Json?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([earthquakeId])
+  @@map("earthquake_images")
+}
+
+model AuditLog {
+  id           String       @id @default(uuid())
+  earthquakeId String?
+  earthquake   Earthquake?  @relation(fields: [earthquakeId], references: [id], onDelete: Cascade)
+  action       AuditAction
+  entityType   String
+  entityId     String
+  changes      Json?
+  userId       String?
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  metadata     Json?
+  ipAddress    String?
+  createdAt    DateTime     @default(now())
+
+  @@index([earthquakeId])
+  @@index([createdAt])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ImageType {
+  ORIGINAL
+  PROCESSED_3D
+  EDGE_DETECTED
+  FFT_TRANSFORMED
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  SYNC
+  PROCESS_IMAGE
 }

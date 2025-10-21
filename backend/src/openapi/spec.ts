@@ -9,6 +9,13 @@ import {
   ValidationErrorResponseDto,
   MessageResponseDto,
 } from '../types/auth.interfaces';
+import {
+  SyncEarthquakesParams,
+  EarthquakeListResponseDto,
+  EarthquakeDetailResponseDto,
+  SyncEarthquakesResponseDto,
+  EarthquakeErrorResponseDto,
+} from '../types/earthquake.interfaces';
 
 export type AuthApiSpec = Tspec.DefineApiSpec<{
   tags: ['Authentication'],
@@ -78,4 +85,65 @@ export type AuthApiSpec = Tspec.DefineApiSpec<{
       },
     },
   },
+}>;
+
+export type EarthquakeApiSpec = Tspec.DefineApiSpec<{
+  tags: ['Earthquakes'],
+  paths: {
+    '/api/earthquakes': {
+      get: {
+        summary: 'List earthquakes',
+        description: 'Get a paginated list of earthquakes with optional filters',
+        tags: ['Earthquakes'],
+        query: {
+          minMagnitude?: number;
+          maxMagnitude?: number;
+          startTime?: string;
+          endTime?: string;
+          minLatitude?: number;
+          maxLatitude?: number;
+          minLongitude?: number;
+          maxLongitude?: number;
+          limit?: number;
+          offset?: number;
+          orderBy?: 'time' | 'magnitude';
+          orderDirection?: 'asc' | 'desc';
+        };
+        responses: {
+          200: EarthquakeListResponseDto;
+          401: ErrorResponseDto;
+          500: ErrorResponseDto;
+        };
+      };
+    };
+    '/api/earthquakes/{id}': {
+      get: {
+        summary: 'Get earthquake details',
+        description: 'Get detailed information about a specific earthquake',
+        tags: ['Earthquakes'];
+        path: {
+          id: string;
+        };
+        responses: {
+          200: EarthquakeDetailResponseDto;
+          401: ErrorResponseDto;
+          404: EarthquakeErrorResponseDto;
+          500: ErrorResponseDto;
+        };
+      };
+    };
+    '/api/earthquakes/sync': {
+      post: {
+        summary: 'Sync earthquakes from USGS',
+        description: 'Fetch and synchronize earthquake data from USGS API',
+        tags: ['Earthquakes'];
+        body: SyncEarthquakesParams;
+        responses: {
+          200: SyncEarthquakesResponseDto;
+          401: ErrorResponseDto;
+          500: SyncEarthquakesResponseDto;
+        };
+      };
+    };
+  };
 }>;
