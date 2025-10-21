@@ -1,13 +1,47 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useEarthquake } from '../hooks/useEarthquakes';
+import { useImages, useProcessImage } from '../hooks/useImages';
 import { Loading } from '../components/common/Loading';
 import { Header } from '../components/layout/Header';
+import { Image3DViewer } from '../components/earthquakes/Image3DViewer';
 import { formatDate, formatMagnitude, formatDepth, getMagnitudeColor, getAlertColor } from '../utils/formatters';
 
 export const EarthquakeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: earthquake, isLoading, error } = useEarthquake(id!);
+  const { data: imagesResponse, isLoading: imagesLoading } = useImages(id!);
+  const processImageMutation = useProcessImage();
+
+  const images = imagesResponse?.data || [];
+
+  const handleProcessImage = async (type: string) => {
+    const originalImage = images.find((img: any) => img.imageType === 'ORIGINAL');
+
+    if (!originalImage || !originalImage.originalUrl) {
+      console.error('No original image found');
+      return;
+    }
+
+    const typeMap: Record<string, 'edge' | 'fft' | '3d'> = {
+      'EDGE_DETECTED': 'edge',
+      'FFT_TRANSFORMED': 'fft',
+      'PROCESSED_3D': '3d',
+    };
+
+    const processingType = typeMap[type];
+    if (!processingType) return;
+
+    try {
+      await processImageMutation.mutateAsync({
+        earthquakeId: id!,
+        imageUrl: originalImage.originalUrl,
+        processingType,
+      });
+    } catch (error) {
+      console.error('Failed to process image:', error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -157,12 +191,15 @@ export const EarthquakeDetailPage: React.FC = () => {
             </div>
 
             <div className="card">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">3D Visualization</h2>
-              <div className="bg-gray-100 rounded-lg h-48 flex items-center justify-center">
-                <p className="text-gray-500 text-sm text-center px-4">
-                  3D visualization will appear here once<br/>images are processed
-                </p>
-              </div>
+              {imagesLoading ? (
+                <Loading />
+              ) : (
+                <Image3DViewer
+                  earthquakeId={id!}
+                  images={images}
+                  onProcessImage={handleProcessImage}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -18,7 +18,16 @@ RUN npm run build
 
 FROM node:20-alpine
 
-RUN apk add --no-cache openssl libc6-compat
+RUN apk add --no-cache \
+    openssl \
+    libc6-compat \
+    python3 \
+    py3-pip \
+    py3-numpy \
+    py3-pillow \
+    py3-opencv \
+    py3-scipy \
+    && ln -sf python3 /usr/bin/python
 
 WORKDIR /app
 

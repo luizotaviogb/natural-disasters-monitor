@@ -1,5 +1,6 @@
 import { PrismaClient, Earthquake, AuditAction } from '@prisma/client';
 import { usgsService } from './usgs.service';
+import { imageService } from './image.service';
 import { USGSFeature } from '../types/usgs.interfaces';
 import {
   EarthquakeFilters,
@@ -109,6 +110,12 @@ export class EarthquakeService {
                 changes: { usgsId: earthquakeData.usgsId },
               },
             });
+
+            try {
+              await imageService.createOriginalImage(newEarthquake.id);
+            } catch (imageError) {
+              console.warn(`Failed to create image for earthquake ${newEarthquake.id}:`, imageError);
+            }
 
             result.created++;
           }

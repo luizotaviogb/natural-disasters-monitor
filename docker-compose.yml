@@ -35,8 +35,12 @@ services:
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-}
       - JWT_EXPIRES_IN=15m
       - JWT_REFRESH_EXPIRES_IN=7d
+      - CLI_PATH=/cli
+      - CLI_DATA_PATH=/data
     volumes:
       - backend_env:/app
+      - cli_data:/data
+      - ./cli:/cli:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -62,6 +66,7 @@ services:
 volumes:
   postgres_data:
   backend_env:
+  cli_data:
 
 networks:
   app-network:

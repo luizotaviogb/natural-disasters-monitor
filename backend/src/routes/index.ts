@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import authRoutes from './auth.routes';
 import earthquakeRoutes from './earthquake.routes';
+import imageRoutes from './image.routes';
 
 const router = Router();
 
@@ -12,12 +13,14 @@ router.get('/', (_req: Request, res: Response) => {
       health: '/health',
       api: '/api',
       auth: '/api/auth',
-      earthquakes: '/api/earthquakes'
+      earthquakes: '/api/earthquakes',
+      images: '/api/images'
     }
   });
 });
 
 router.use('/auth', authRoutes);
+router.use('/', imageRoutes);
 router.use('/earthquakes', earthquakeRoutes);
 
 export default router;

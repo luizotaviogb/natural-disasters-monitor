@@ -33,6 +33,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const dataOutputPath = process.env.CLI_DATA_PATH ? path.join(process.env.CLI_DATA_PATH, 'output') : '/data/output';
+app.use('/processed', express.static(dataOutputPath));
+
 const openApiPath = path.join(__dirname, '../openapi.json');
 if (fs.existsSync(openApiPath)) {
   const openapiDocument = JSON.parse(fs.readFileSync(openApiPath, 'utf-8'));
